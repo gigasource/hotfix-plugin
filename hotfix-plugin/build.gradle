@@ -31,8 +31,6 @@ dependencies {
 
     api("com.tencent.tinker:tinker-android-lib:1.9.14.3")
     api("com.tencent.tinker:tinker-android-loader:1.9.14.3")
-    annotationProcessor("com.tencent.tinker:tinker-android-anno:1.9.14.3")
-    api("com.tencent.tinker:tinker-android-anno:1.9.14.3")
 
     api("com.squareup.okhttp3:okhttp:4.3.1")
 

@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.TOPIC);
-        PatchingUtil.checkForUpdate(this);
     }
 
 }
