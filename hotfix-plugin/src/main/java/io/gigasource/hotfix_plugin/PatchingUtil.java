@@ -3,6 +3,7 @@ package io.gigasource.hotfix_plugin;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.tencent.tinker.lib.library.TinkerLoadLibrary;
 import com.tencent.tinker.lib.tinker.Tinker;
 import com.tencent.tinker.lib.tinker.TinkerInstaller;
@@ -167,6 +168,7 @@ public class PatchingUtil {
     }
 
     public static void checkForUpdate(final Context context) {
+        FirebaseMessaging.getInstance().subscribeToTopic((String) getBuildConfigValue(context, "TOPIC"));
         Thread updateThread = new Thread(new Runnable() {
             @Override
             public void run() {
