@@ -26,9 +26,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    api('com.google.firebase:firebase-messaging:20.0.0')
-    api('com.google.firebase:firebase-core:17.2.0')
-
     api("com.tencent.tinker:tinker-android-lib:1.9.14.3")
     api("com.tencent.tinker:tinker-android-loader:1.9.14.3")
 
