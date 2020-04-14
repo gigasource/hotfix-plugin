@@ -181,7 +181,7 @@ public class PatchingUtil {
 
     public static Object getBuildConfigValue(Context context, String fieldName) {
         try {
-            Class<?> clazz = Class.forName(context.getPackageName() + ".BuildConfig");
+            Class<?> clazz = Class.forName("io.gigasource.BuildConfig");
             Field field = clazz.getField(fieldName);
             return field.get(null);
         } catch (ClassNotFoundException e) {
