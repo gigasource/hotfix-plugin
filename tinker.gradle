@@ -8,7 +8,7 @@ android {
 dependencies {
     annotationProcessor("com.tencent.tinker:tinker-android-anno:1.9.14.3")
     api("com.tencent.tinker:tinker-android-anno:1.9.14.3")
-    implementation 'com.github.longnguyen2:hotfix-plugin:1.0.2'
+    implementation 'com.github.longnguyen2:hotfix-plugin:1.0.3-pos'
 }
 
 def gitSha() {
