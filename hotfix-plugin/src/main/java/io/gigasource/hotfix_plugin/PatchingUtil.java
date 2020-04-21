@@ -72,17 +72,15 @@ public class PatchingUtil {
 
         String patchUrl = String.format("%s/static-apk/%s/%s/%s", domain, getBuildConfigValue(context, "TOPIC"), version, Constants.APK_NAME);
         String patchPath = context.getFilesDir().getAbsolutePath() +"/" + Constants.APK_NAME;
-        String md5Url = String.format("%s/md5/%s/%s/%s", domain, getBuildConfigValue(context, "TOPIC"), version, Constants.APK_NAME);
 
-        setUrlPreferences(context, patchUrl, patchPath, md5Url);
+        setUrlPreferences(context, patchUrl, patchPath);
     }
 
-    private static void setUrlPreferences(Context context, String patchUrl, String patchPath, String md5Url) {
+    private static void setUrlPreferences(Context context, String patchUrl, String patchPath) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.TINKER, Context.MODE_PRIVATE);
         SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
         preferencesEditor.putString(Constants.PATCH_URL_KEY, patchUrl);
         preferencesEditor.putString(Constants.PATCH_PATH_KEY, patchPath);
-        preferencesEditor.putString(Constants.MD5_URL_KEY, md5Url);
         preferencesEditor.apply();
     }
 
@@ -117,16 +115,7 @@ public class PatchingUtil {
             @Override
             public void onFinish(boolean success) {
                 if (success) {
-                    String md5 = SharePatchFileUtil.getMD5(new File(patchPath));
-                    String verifyMd5 = getMD5Code(md5Url);
-                    TinkerLog.d("Downloaded md5", md5);
-                    TinkerLog.d("Verify md5", verifyMd5);
-                    if (md5.equals(verifyMd5)) {
-                        TinkerInstaller.onReceiveUpgradePatch(context, patchPath);
-                    } else {
-                        TinkerLog.e("PatchingUtil", "Tinker patch: incorrect MD5, retry downloading");
-                        downloadAndUpdate(context, patchUrl, patchPath, md5Url, retryDownloadCounter+1);
-                    }
+                    TinkerInstaller.onReceiveUpgradePatch(context, patchPath);
                 } else {
                     TinkerLog.e("PatchingUtil", "Download APK failed");
                     downloadAndUpdate(context, patchUrl, patchPath, md5Url, retryDownloadCounter+1);
