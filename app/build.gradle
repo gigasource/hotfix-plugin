@@ -10,8 +10,6 @@ android {
         versionCode Integer.parseInt(CODE)
         versionName VERSION
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField "String", "TOPIC", "\"${TOPIC}\""
     }
     buildTypes {
         release {
@@ -32,4 +30,3 @@ dependencies {
 
     implementation project(":hotfix-plugin")
 }
-

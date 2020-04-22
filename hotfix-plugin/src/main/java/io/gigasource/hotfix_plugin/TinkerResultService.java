@@ -42,13 +42,7 @@ public class TinkerResultService extends DefaultTinkerResultService {
                 TinkerLog.i(TAG, "I have already install the newly patch version!");
             }
         } else {
-            TinkerLog.e(TAG, String.format("Update patch failed %d time(s), retry update process...", PatchingUtil.updateCounter));
-            if (PatchingUtil.updateCounter < PatchingUtil.MAX_UPDATE_RETRY) {
-                PatchingUtil.updateCounter += 1;
-                PatchingUtil.downloadAndUpdate(getApplicationContext());
-            } else {
-                TinkerLog.e(TAG, String.format("Stop update process after %d times retry", PatchingUtil.MAX_UPDATE_RETRY));
-            }
+            TinkerLog.e(TAG, "Update patch failed");
         }
     }
 

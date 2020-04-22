@@ -12,11 +12,10 @@ public class UpdateManuallyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         TinkerLog.d(TAG, "Load patch");
-        final String domain = getApplicationContext().getSharedPreferences(Constants.TINKER, MODE_PRIVATE).getString(Constants.DOMAIN_KEY, Constants.DEFAULT_DOMAIN);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                PatchingUtil.checkForUpdate(getApplicationContext(), domain);
+                PatchingUtil.checkForUpdate(getApplicationContext());
             }
         }).start();
 

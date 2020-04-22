@@ -1,7 +1,6 @@
 android {
     defaultConfig {
         multiDexEnabled true
-        buildConfigField "String", "TOPIC", "\"${TOPIC}\""
     }
 }
 

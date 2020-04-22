@@ -24,7 +24,6 @@ import okhttp3.Response;
 
 public class PatchingUtil {
     private static final int MAX_DOWNLOAD_RETRY = 12;
-    public static final int MAX_UPDATE_RETRY = 12;
     public static int updateCounter = 0;
 
     public static void loadLibrary(Context context) {
@@ -41,9 +40,8 @@ public class PatchingUtil {
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-    public static void checkForUpdate(Context context, String domain) {
+    private static void _checkForUpdate(Context context) {
         TinkerLog.d("PatchingUtil", "Check for update");
-        initUrl(context, domain);
 
         Tinker tinker = Tinker.with(context);
         TinkerLoadResult tinkerLoadResult = tinker.getTinkerLoadResultIfPresent();
@@ -58,22 +56,6 @@ public class PatchingUtil {
             PatchingUtil.updateCounter = 1;
             PatchingUtil.downloadAndUpdate(context);
         }
-    }
-
-    private static void initUrl(Context context, String domain) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.TINKER, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString(Constants.DOMAIN_KEY, domain).apply();
-        Tinker tinker = Tinker.with(context);
-        if (!tinker.isTinkerLoaded()) {
-            sharedPreferences.edit().putString("originalVersion", BuildConfig.VERSION_NAME).apply();
-        }
-
-        String version = sharedPreferences.getString("originalVersion", BuildConfig.VERSION_NAME);
-
-        String patchUrl = String.format("%s/static-apk/%s/%s/%s", domain, getBuildConfigValue(context, "TOPIC"), version, Constants.APK_NAME);
-        String patchPath = context.getFilesDir().getAbsolutePath() +"/" + Constants.APK_NAME;
-
-        setUrlPreferences(context, patchUrl, patchPath);
     }
 
     private static void setUrlPreferences(Context context, String patchUrl, String patchPath) {
@@ -160,7 +142,7 @@ public class PatchingUtil {
             @Override
             public void run() {
                 String domain = context.getSharedPreferences(Constants.TINKER, Context.MODE_PRIVATE).getString(Constants.DOMAIN_KEY, Constants.DEFAULT_DOMAIN);
-                checkForUpdate(context, domain);
+                _checkForUpdate(context);
             }
         });
         updateThread.setDaemon(true);
