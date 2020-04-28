@@ -32,11 +32,6 @@ public class TinkerResultService extends DefaultTinkerResultService {
             deleteRawPatchFile(new File(result.rawPatchFilePath));
 
             if (checkIfNeedKill(result)) {
-                try {
-                    Thread.sleep(30 * 1000); // 30s
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 restartProcess();
             } else {
                 TinkerLog.i(TAG, "I have already install the newly patch version!");
