@@ -33,7 +33,7 @@ public class TinkerResultService extends DefaultTinkerResultService {
 
             if (checkIfNeedKill(result)) {
                 try {
-                    Thread.sleep(30 * 1000); // 30s
+                    Thread.sleep(3 * 1000); // 3s
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
