@@ -9,6 +9,7 @@ import com.tencent.tinker.lib.reporter.DefaultLoadReporter;
 import com.tencent.tinker.lib.reporter.DefaultPatchReporter;
 import com.tencent.tinker.lib.reporter.LoadReporter;
 import com.tencent.tinker.lib.reporter.PatchReporter;
+import com.tencent.tinker.lib.service.AbstractResultService;
 import com.tencent.tinker.lib.tinker.TinkerInstaller;
 import com.tencent.tinker.lib.util.TinkerLog;
 import com.tencent.tinker.lib.util.UpgradePatchRetry;
@@ -44,6 +45,23 @@ public class TinkerManager {
         TinkerInstaller.install(appLike,
                 loadReporter, patchReporter, patchListener,
                 TinkerResultService.class, upgradePatchProcessor);
+
+        isInstalled = true;
+    }
+
+    public static void installTinker(ApplicationLike appLike, Class<? extends AbstractResultService> resultServiceClass) {
+        if (isInstalled) {
+            TinkerLog.w(TAG, "install tinker, but has installed, ignore");
+            return;
+        }
+        LoadReporter loadReporter = new DefaultLoadReporter(appLike.getApplication());
+        PatchReporter patchReporter = new DefaultPatchReporter(appLike.getApplication());
+        PatchListener patchListener = new DefaultPatchListener(appLike.getApplication());
+        AbstractPatch upgradePatchProcessor = new UpgradePatch();
+
+        TinkerInstaller.install(appLike,
+                loadReporter, patchReporter, patchListener,
+                resultServiceClass, upgradePatchProcessor);
 
         isInstalled = true;
     }
