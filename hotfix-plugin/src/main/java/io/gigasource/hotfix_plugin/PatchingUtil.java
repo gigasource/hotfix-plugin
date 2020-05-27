@@ -41,25 +41,6 @@ public class PatchingUtil {
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-    public static void checkForUpdate(Context context, String domain) {
-        TinkerLog.d("PatchingUtil", "Check for update");
-        initUrl(context, domain);
-
-        Tinker tinker = Tinker.with(context);
-        TinkerLoadResult tinkerLoadResult = tinker.getTinkerLoadResultIfPresent();
-
-        String patchMd5 = getMD5Code(context.getSharedPreferences(Constants.TINKER, Context.MODE_PRIVATE).getString(Constants.MD5_URL_KEY, ""));
-        String currentMd5 = tinkerLoadResult.currentVersion;
-
-        if (patchMd5.equals(currentMd5)) {
-            TinkerLog.d("PatchingUtil", "Tinker patch: app is up to date");
-        } else if (!patchMd5.isEmpty()) {
-            TinkerLog.d("PatchingUtil", "Tinker patch: there is a newer version. Start updating");
-            PatchingUtil.updateCounter = 1;
-            PatchingUtil.downloadAndUpdate(context);
-        }
-    }
-
     private static void initUrl(Context context, String domain) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.TINKER, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString(Constants.DOMAIN_KEY, domain).apply();
@@ -86,19 +67,6 @@ public class PatchingUtil {
         preferencesEditor.apply();
     }
 
-    private static String getMD5Code(String url) {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        try (Response response = client.newCall(request).execute()) {
-            return response.code() == 200 ? response.body().string() : "";
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
     public static void downloadAndUpdate(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.TINKER, Context.MODE_PRIVATE);
         String patchUrl = sharedPreferences.getString(Constants.PATCH_URL_KEY, "");
@@ -117,16 +85,7 @@ public class PatchingUtil {
             @Override
             public void onFinish(boolean success) {
                 if (success) {
-                    String md5 = SharePatchFileUtil.getMD5(new File(patchPath));
-                    String verifyMd5 = getMD5Code(md5Url);
-                    TinkerLog.d("Downloaded md5", md5);
-                    TinkerLog.d("Verify md5", verifyMd5);
-                    if (md5.equals(verifyMd5)) {
-                        TinkerInstaller.onReceiveUpgradePatch(context, patchPath);
-                    } else {
-                        TinkerLog.e("PatchingUtil", "Tinker patch: incorrect MD5, retry downloading");
-                        downloadAndUpdate(context, patchUrl, patchPath, md5Url, retryDownloadCounter+1);
-                    }
+                    TinkerInstaller.onReceiveUpgradePatch(context, patchPath);
                 } else {
                     TinkerLog.e("PatchingUtil", "Download APK failed");
                     downloadAndUpdate(context, patchUrl, patchPath, md5Url, retryDownloadCounter+1);
@@ -164,19 +123,6 @@ public class PatchingUtil {
 
     private interface DownloadTask {
         void onFinish(boolean success);
-    }
-
-    public static void checkForUpdate(final Context context) {
-        Thread updateThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String domain = context.getSharedPreferences(Constants.TINKER, Context.MODE_PRIVATE).getString(Constants.DOMAIN_KEY, Constants.DEFAULT_DOMAIN);
-                checkForUpdate(context, domain);
-            }
-        });
-        updateThread.setDaemon(true);
-        updateThread.setName("Tinker Update");
-        updateThread.start();
     }
 
     public static Object getBuildConfigValue(Context context, String fieldName) {
