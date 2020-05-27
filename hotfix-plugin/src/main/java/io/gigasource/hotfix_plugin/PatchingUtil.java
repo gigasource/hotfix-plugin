@@ -2,6 +2,7 @@ package io.gigasource.hotfix_plugin;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.tencent.tinker.lib.library.TinkerLoadLibrary;
 import com.tencent.tinker.lib.tinker.Tinker;
@@ -71,16 +72,16 @@ public class PatchingUtil {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.TINKER, Context.MODE_PRIVATE);
         String patchUrl = sharedPreferences.getString(Constants.PATCH_URL_KEY, "");
         String patchPath = sharedPreferences.getString(Constants.PATCH_PATH_KEY, "");
-        String md5Url = sharedPreferences.getString(Constants.MD5_URL_KEY, "");
 
-        downloadAndUpdate(context, patchUrl, patchPath, md5Url, 1);
+        downloadAndUpdate(context, patchUrl, patchPath, 1);
     }
 
-    private static void downloadAndUpdate(final Context context, final String patchUrl, final String patchPath, final String md5Url, final int retryDownloadCounter) {
+    private static void downloadAndUpdate(final Context context, final String patchUrl, final String patchPath, final int retryDownloadCounter) {
         if (retryDownloadCounter > MAX_DOWNLOAD_RETRY) {
             TinkerLog.e("PatchingUtil", "Tinker patch: Reached maximum retry, exiting...");
             return;
         }
+        Log.d("PatchingUtils", patchPath + " " + patchUrl);
         downloadApk(new DownloadTask() {
             @Override
             public void onFinish(boolean success) {
@@ -88,7 +89,7 @@ public class PatchingUtil {
                     TinkerInstaller.onReceiveUpgradePatch(context, patchPath);
                 } else {
                     TinkerLog.e("PatchingUtil", "Download APK failed");
-                    downloadAndUpdate(context, patchUrl, patchPath, md5Url, retryDownloadCounter+1);
+                    downloadAndUpdate(context, patchUrl, patchPath, retryDownloadCounter+1);
                 }
             }
         }, patchUrl, patchPath);
