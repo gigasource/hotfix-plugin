@@ -81,11 +81,12 @@ public class PatchingUtil {
             TinkerLog.e("PatchingUtil", "Tinker patch: Reached maximum retry, exiting...");
             return;
         }
-        Log.d("PatchingUtils", patchPath + " " + patchUrl);
+        TinkerLog.d("PatchingUtil", patchPath + " " + patchUrl);
         downloadApk(new DownloadTask() {
             @Override
             public void onFinish(boolean success) {
                 if (success) {
+                    TinkerLog.d("PatchingUtil", "Finished download, start patching");
                     TinkerInstaller.onReceiveUpgradePatch(context, patchPath);
                 } else {
                     TinkerLog.e("PatchingUtil", "Download APK failed");
